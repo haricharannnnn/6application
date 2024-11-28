@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Five-in-One App</title>
+    <style>
+        /* Basic styling for app */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        #app-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Tab styling */
+        .tab-buttons {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+
+        .tab-buttons button {
+            padding: 10px;
+            flex: 1;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .tab-buttons button.active {
+            background-color: #0056b3;
+        }
+
+        /* Tab content */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Additional styling */
+        #calculator input,
+        #todo-input,
+        #note-input,
+        #alarm-time {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            font-size: 16px;
+        }
+
+        #todo-list,
+        #notes-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        #todo-list li,
+        #notes-list li {
+            margin-top: 5px;
+            padding: 10px;
+            background: #e0e0e0;
+            border-radius: 4px;
+        }
+
+        .clock-section {
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+
+        .clock-section h3 {
+            margin-bottom: 10px;
+            font-size: 18px;
+            color: #333;
+        }
+
+        #stopwatch-display, #timer-display {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        #alarm-status {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+<div id="app-container">
+    <h1>Five-in-One App</h1>
+    
+    <div class="tab-buttons">
+        <button onclick="openTab('calculator')" class="active">Calculator</button>
+        <button onclick="openTab('compass')">Compass</button>
+        <button onclick="openTab('todo')">To-Do List</button>
+        <button onclick="openTab('calendar')">Calendar</button>
+        <button onclick="openTab('note')">Notes</button>
+        <button onclick="openTab('clock')">Clock</button>
+    </div>
+
+    <!-- Calculator Tab -->
+    <div id="calculator" class="tab-content active">
+        <h2>Calculator</h2>
+        <input type="text" id="calc-display" placeholder="0" disabled>
+        <div>
+            <button onclick="calculate('1')">1</button>
+            <button onclick="calculate('2')">2</button>
+            <button onclick="calculate('3')">3</button>
+            <button onclick="calculate('+')">+</button>
+        </div>
+        <div>
+            <button onclick="calculate('4')">4</button>
+            <button onclick="calculate('5')">5</button>
+            <button onclick="calculate('6')">6</button>
+            <button onclick="calculate('-')">-</button>
+        </div>
+        <div>
+            <button onclick="calculate('7')">7</button>
+            <button onclick="calculate('8')">8</button>
+            <button onclick="calculate('9')">9</button>
+            <button onclick="calculate('*')">*</button>
+        </div>
+        <div>
+            <button onclick="calculate('0')">0</button>
+            <button onclick="calculate('.')">.</button>
+            <button onclick="calculate('=')">=</button>
+            <button onclick="calculate('/')">/</button>
+        </div>
+        <button onclick="clearCalc()">Clear</button>
+    </div>
+
+    <!-- Compass Tab -->
+    <div id="compass" class="tab-content">
+        <h2>Compass</h2>
+        <p id="compass-output">Direction: 0°</p>
+    </div>
+
+    <!-- To-Do List Tab -->
+    <div id="todo" class="tab-content">
+        <h2>To-Do List</h2>
+        <input type="text" id="todo-input" placeholder="Add a new task">
+        <button onclick="addToDo()">Add Task</button>
+        <ul id="todo-list"></ul>
+    </div>
+
+    <!-- Calendar Tab -->
+    <div id="calendar" class="tab-content">
+        <h2>Calendar</h2>
+        <input type="date" id="calendar-input">
+        <p>Choose a date</p>
+    </div>
+
+    <!-- Notes Tab -->
+    <div id="note" class="tab-content">
+        <h2>Notes</h2>
+        <input type="text" id="note-input" placeholder="Add a new note">
+        <button onclick="addNote()">Add Note</button>
+        <ul id="notes-list"></ul>
+    </div>
+
+    <!-- Clock Tab -->
+    <div id="clock" class="tab-content">
+        <h2>Clock</h2>
+
+        <!-- Alarm -->
+        <div class="clock-section">
+            <h3>Set Alarm</h3>
+            <input type="time" id="alarm-time">
+            <p>Upload Alarm Sound:</p>
+            <input type="file" id="alarm-sound-upload" accept="audio/*">
+            <button onclick="setAlarm()">Set Alarm</button>
+            <button onclick="stopAlarm()">Turn Off Alarm</button>
+            <p id="alarm-status">No alarm set</p>
+            <audio id="alarm-audio"></audio>
+        </div>
+
+        <!-- Stopwatch -->
+        <div class="clock-section">
+            <h3>Stopwatch</h3>
+            <p id="stopwatch-display">00:00:00</p>
+            <button onclick="startStopwatch()">Start</button>
+            <button onclick="stopStopwatch()">Stop</button>
+            <button onclick="resetStopwatch()">Reset</button>
+        </div>
+
+        <!-- Timer -->
+        <div class="clock-section">
+            <h3>Timer</h3>
+            <input type="number" id="timer-input" placeholder="Enter seconds">
+            <button onclick="startTimer()">Start Timer</button>
+            <p id="timer-display">00:00</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Tab navigation
+    function openTab(tabName) {
+        const tabs = document.querySelectorAll(".tab-content");
+        const buttons = document.querySelectorAll(".tab-buttons button");
+        tabs.forEach(tab => tab.classList.remove("active"));
+        buttons.forEach(button => button.classList.remove("active"));
+        document.getElementById(tabName).classList.add("active");
+        document.querySelector(`button[onclick="openTab('${tabName}')"]`).classList.add("active");
+    }
+
+    // Calculator
+    let calcDisplay = "";
+    function calculate(value) {
+        if (value === "=") {
+            calcDisplay = eval(calcDisplay);
+        } else {
+            calcDisplay += value;
+        }
+        document.getElementById("calc-display").value = calcDisplay;
+    }
+    function clearCalc() {
+        calcDisplay = "";
+        document.getElementById("calc-display").value = calcDisplay;
+    }
+
+    // To-Do List
+    function addToDo() {
+        const todoInput = document.getElementById("todo-input");
+        const newTask = todoInput.value.trim();
+        if (newTask) {
+            const li = document.createElement("li");
+            li.innerText = newTask;
+            document.getElementById("todo-list").appendChild(li);
+            todoInput.value = "";
+        }
+    }
+
+    // Notes
+    function addNote() {
+        const noteInput = document.getElementById("note-input");
+        const newNote = noteInput.value.trim();
+        if (newNote) {
+            const li = document.createElement("li");
+            li.innerText = newNote;
+            document.getElementById("notes-list").appendChild(li);
+            noteInput.value = "";
+        }
+    }
+
+    // Clock - Alarm
+    let alarmTimeout;
+    const alarmAudio = document.getElementById("alarm-audio");
+
+    function setAlarm() {
+        const alarmTime = document.getElementById("alarm-time").value;
+        const soundFile = document.getElementById("alarm-sound-upload").files[0];
+
+        if (soundFile) {
+            const fileURL = URL.createObjectURL(soundFile);
+            alarmAudio.src = fileURL;
+        }
+
+        if (alarmTime) {
+            const now = new Date();
+            const alarmDate = new Date(`${now.toDateString()} ${alarmTime}`);
+            if (alarmDate > now) {
+                const timeToAlarm = alarmDate - now;
+                alarmTimeout = setTimeout(() => {
+                    alarmAudio.play();
+                    alert("Alarm ringing!");
+                }, timeToAlarm);
+                document.getElementById("alarm-status").innerText = `Alarm set for ${alarmTime}`;
+            } else {
+                alert("Please set a future time for the alarm.");
+            }
+        } else {
+            alert("Please enter a valid time.");
+        }
+    }
+
+    function stopAlarm() {
+        clearTimeout(alarmTimeout);
+        alarmAudio.pause();
+        alarmAudio.currentTime = 0;
+        document.getElementById("alarm-status").innerText = "No alarm set";
+    }
+
+    // Stopwatch
+    let stopwatchInterval;
+    let stopwatchTime = 0;
+    function updateStopwatch() {
+        stopwatchTime++;
+        const hours = String(Math.floor(stopwatchTime / 3600)).padStart(2, "0");
+        const minutes = String(Math.floor((stopwatchTime % 3600) / 60)).padStart(2, "0");
+        const seconds = String(stopwatchTime % 60).padStart(2, "0");
+        document.getElementById("stopwatch-display").innerText = `${hours}:${minutes}:${seconds}`;
+    }
+    function startStopwatch() {
+        if (!stopwatchInterval) stopwatchInterval = setInterval(updateStopwatch, 1000);
+    }
+    function stopStopwatch() {
+        clearInterval(stopwatchInterval);
+        stopwatchInterval = null;
+    }
+    function resetStopwatch() {
+        stopStopwatch();
+        stopwatchTime = 0;
+        document.getElementById("stopwatch-display").innerText = "00:00:00";
+    }
+
+    // Timer
+    let timerInterval;
+    function startTimer() {
+        const timerInput = parseInt(document.getElementById("timer-input").value);
+        if (isNaN(timerInput) || timerInput <= 0) {
+            alert("Please enter a valid number of seconds.");
+            return;
+        }
+        let timeRemaining = timerInput;
+        function updateTimer() {
+            if (timeRemaining > 0) {
+                timeRemaining--;
+                const minutes = String(Math.floor(timeRemaining / 60)).padStart(2, "0");
+                const seconds = String(timeRemaining % 60).padStart(2, "0");
+                document.getElementById("timer-display").innerText = `${minutes}:${seconds}`;
+            } else {
+                clearInterval(timerInterval);
+                alert("Time's up!");
+            }
+        }
+        clearInterval(timerInterval);
+        timerInterval = setInterval(updateTimer, 1000);
+        updateTimer();
+    }
+</script>
+
+</body>
+</html>
